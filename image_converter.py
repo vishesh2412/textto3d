@@ -19,91 +19,416 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for Meshy AI-like styling
+# Dynamic CSS with black, red, and blue theme
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+    
+    /* Animated background */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #000000 0%, #0d1117 25%, #161b22 50%, #1a1d29 75%, #000000 100%);
+        animation: backgroundShift 10s ease-in-out infinite alternate;
+    }
+    
+    @keyframes backgroundShift {
+        0% { background: linear-gradient(135deg, #000000 0%, #0d1117 25%, #161b22 50%, #1a1d29 75%, #000000 100%); }
+        100% { background: linear-gradient(135deg, #0d1117 0%, #161b22 25%, #1a1d29 50%, #21262d 75%, #0d1117 100%); }
     }
     
     .stApp {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: #000000;
+        color: #ffffff;
     }
     
-    .hero-header {
-        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-        padding: 2rem;
+    /* Particle effect background */
+    .main::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(2px 2px at 20% 30%, #ff0040, transparent),
+            radial-gradient(2px 2px at 40% 70%, #0040ff, transparent),
+            radial-gradient(1px 1px at 90% 40%, #ff0040, transparent),
+            radial-gradient(1px 1px at 50% 50%, #0040ff, transparent);
+        background-size: 200px 200px, 180px 180px, 150px 150px, 120px 120px;
+        animation: particles 20s linear infinite;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.3;
+    }
+    
+    @keyframes particles {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-100px) rotate(360deg); }
+    }
+    
+    /* Navigation Bar */
+    .nav-container {
+        background: linear-gradient(90deg, rgba(255,0,64,0.1) 0%, rgba(0,0,0,0.9) 50%, rgba(0,64,255,0.1) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,0,64,0.2);
         border-radius: 20px;
-        text-align: center;
+        padding: 1rem 2rem;
         margin-bottom: 2rem;
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
     }
     
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+    .nav-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(transparent, rgba(255,0,64,0.1), transparent);
+        animation: rotate 10s linear infinite;
+        z-index: -1;
+    }
+    
+    @keyframes rotate {
+        100% { transform: rotate(360deg); }
+    }
+    
+    .nav-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 4rem;
+        font-weight: 900;
+        text-align: center;
+        background: linear-gradient(45deg, #ff0040, #0040ff, #ff0040);
+        background-size: 200% 200%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
-        font-family: 'Arial Black', sans-serif;
+        animation: gradientShift 3s ease-in-out infinite alternate;
+        text-shadow: 0 0 30px rgba(255,0,64,0.5);
+        margin-bottom: 0.5rem;
     }
     
-    .hero-subtitle {
-        font-size: 1.3rem;
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+    
+    .nav-subtitle {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 300;
+        text-align: center;
         color: rgba(255,255,255,0.8);
         margin-bottom: 0;
     }
     
-    .feature-card {
-        background: rgba(255,255,255,0.1);
-        padding: 1.5rem;
-        border-radius: 15px;
+    /* Menu tabs */
+    .menu-tabs {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+    }
+    
+    .menu-tab {
+        background: linear-gradient(135deg, rgba(255,0,64,0.1), rgba(0,64,255,0.1));
+        border: 2px solid rgba(255,0,64,0.3);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .menu-tab:hover {
+        border-color: #ff0040;
+        box-shadow: 0 0 20px rgba(255,0,64,0.4), inset 0 0 20px rgba(255,0,64,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .menu-tab.active {
+        background: linear-gradient(135deg, rgba(255,0,64,0.2), rgba(0,64,255,0.2));
+        border-color: #0040ff;
+        box-shadow: 0 0 25px rgba(0,64,255,0.5);
+    }
+    
+    /* Cards and containers */
+    .cyber-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.8) 100%);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
         margin: 1rem 0;
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
     }
     
-    .model-preview {
-        background: rgba(0,0,0,0.3);
-        border-radius: 15px;
-        padding: 1rem;
-        border: 2px solid rgba(255,255,255,0.1);
+    .cyber-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: linear-gradient(45deg, #ff0040, #0040ff, #ff0040);
+        border-radius: inherit;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        z-index: -1;
     }
     
-    .success-glow {
-        background: linear-gradient(135deg, rgba(0,255,127,0.2) 0%, rgba(0,255,255,0.2) 100%);
-        border: 2px solid rgba(0,255,127,0.5);
+    .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(255,0,64,0.2);
+    }
+    
+    .glitch-card {
+        background: rgba(0,0,0,0.9);
+        border: 2px solid #ff0040;
         border-radius: 15px;
         padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .glitch-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,0,64,0.1), transparent);
+        animation: scan 3s infinite;
+    }
+    
+    @keyframes scan {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    /* Success and processing animations */
+    .success-matrix {
+        background: linear-gradient(135deg, rgba(0,255,64,0.1) 0%, rgba(0,64,255,0.1) 100%);
+        border: 2px solid #00ff40;
+        border-radius: 20px;
+        padding: 2rem;
         margin: 1rem 0;
-        backdrop-filter: blur(10px);
-    }
-    
-    .processing-card {
-        background: linear-gradient(135deg, rgba(255,165,0,0.2) 0%, rgba(255,69,0,0.2) 100%);
-        border: 2px solid rgba(255,165,0,0.5);
-        border-radius: 15px;
-        padding: 1.5rem;
+        position: relative;
+        animation: pulse 2s infinite;
         text-align: center;
     }
     
-    .viewer-controls {
-        background: rgba(255,255,255,0.05);
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(0,255,64,0.2); }
+        50% { box-shadow: 0 0 30px rgba(0,255,64,0.4), 0 0 40px rgba(0,64,255,0.2); }
+    }
+    
+    .processing-matrix {
+        background: linear-gradient(135deg, rgba(255,165,0,0.1) 0%, rgba(255,0,64,0.1) 100%);
+        border: 2px solid #ff6500;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .processing-matrix::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(transparent, rgba(255,165,0,0.2), transparent);
+        animation: rotate 2s linear infinite;
+    }
+    
+    /* Interactive elements */
+    .stSelectbox > div > div, .stSlider > div > div, .stButton > button {
+        background: rgba(0,0,0,0.8) !important;
+        border: 2px solid rgba(255,0,64,0.3) !important;
+        border-radius: 10px !important;
+        color: white !important;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease !important;
+    }
+    
+    .stSelectbox > div > div:hover, .stSlider > div > div:hover {
+        border-color: #ff0040 !important;
+        box-shadow: 0 0 15px rgba(255,0,64,0.3) !important;
+    }
+    
+    .stButton > button {
+        font-family: 'Rajdhani', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        padding: 1rem 2rem !important;
+        background: linear-gradient(45deg, #ff0040, #0040ff) !important;
+        border: none !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stButton > button:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 0 25px rgba(255,0,64,0.5) !important;
+    }
+    
+    .stButton > button::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    .stButton > button:hover::before {
+        left: 100% !important;
+    }
+    
+    /* Sidebar styling */
+    .css-1d391kg {
+        background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(13,17,23,0.95) 100%) !important;
+        border-right: 2px solid rgba(255,0,64,0.2) !important;
+    }
+    
+    /* Progress bar */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, #ff0040, #0040ff) !important;
+    }
+    
+    /* Metrics */
+    .metric-container {
+        background: rgba(0,0,0,0.7);
+        border: 1px solid rgba(0,64,255,0.3);
+        border-radius: 15px;
         padding: 1rem;
-        border-radius: 10px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .metric-container:hover {
+        border-color: #0040ff;
+        box-shadow: 0 0 15px rgba(0,64,255,0.2);
+        transform: scale(1.05);
+    }
+    
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        background: rgba(0,0,0,0.8) !important;
+        border-radius: 15px !important;
+        padding: 0.5rem !important;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: transparent !important;
+        border: 2px solid rgba(255,0,64,0.2) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        margin: 0.2rem !important;
+        font-family: 'Rajdhani', sans-serif !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(45deg, #ff0040, #0040ff) !important;
+        border-color: #ff0040 !important;
+    }
+    
+    /* File uploader */
+    .stFileUploader > section {
+        background: rgba(0,0,0,0.8) !important;
+        border: 2px dashed rgba(255,0,64,0.4) !important;
+        border-radius: 20px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stFileUploader > section:hover {
+        border-color: #ff0040 !important;
+        box-shadow: 0 0 20px rgba(255,0,64,0.2) !important;
+    }
+    
+    /* Viewer controls */
+    .viewer-control-panel {
+        background: rgba(0,0,0,0.9);
+        border: 2px solid rgba(0,64,255,0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
         margin: 1rem 0;
-        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
     }
     
-    .stSelectbox > div > div {
-        background-color: rgba(255,255,255,0.1);
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.2);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #ff0040, #0040ff);
         border-radius: 10px;
     }
     
-    .stSlider > div > div {
-        background-color: rgba(255,255,255,0.1);
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #0040ff, #ff0040);
+    }
+    
+    /* Text styling */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Orbitron', monospace !important;
+        color: #ffffff !important;
+    }
+    
+    p, span, div {
+        font-family: 'Rajdhani', sans-serif !important;
+        color: rgba(255,255,255,0.9) !important;
+    }
+    
+    /* Loading animation */
+    @keyframes matrix-rain {
+        0% { transform: translateY(-100vh); opacity: 1; }
+        100% { transform: translateY(100vh); opacity: 0; }
+    }
+    
+    .matrix-effect {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+        overflow: hidden;
+    }
+    
+    .matrix-char {
+        position: absolute;
+        font-family: 'Courier New', monospace;
+        color: #00ff40;
+        font-size: 14px;
+        animation: matrix-rain 3s linear infinite;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .nav-title { font-size: 2.5rem; }
+        .nav-subtitle { font-size: 1.1rem; }
+        .menu-tabs { flex-direction: column; align-items: center; }
+        .cyber-card { padding: 1rem; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -125,20 +450,13 @@ def preprocess_image_for_3d(image, enhancement_type="edge_enhanced"):
     
     # Apply different enhancement techniques
     if enhancement_type == "edge_enhanced":
-        # Enhance edges for better 3D structure
         edges = cv2.Canny(gray, 50, 150)
         gray = cv2.addWeighted(gray, 0.8, edges, 0.2, 0)
-        
     elif enhancement_type == "smooth_terrain":
-        # Apply Gaussian smoothing for terrain-like surfaces
         gray = gaussian_filter(gray, sigma=1.5)
-        
     elif enhancement_type == "sharp_details":
-        # Enhance contrast and details
         gray = cv2.equalizeHist(gray)
-        
     elif enhancement_type == "artistic":
-        # Create more dramatic height variations
         gray = np.power(gray / 255.0, 0.7) * 255
         gray = gray.astype(np.uint8)
     
@@ -156,40 +474,31 @@ def generate_mesh_from_pointcloud(points, colors, mesh_quality="medium"):
         return pcd, "point_cloud"
     
     try:
-        # Estimate normals
         pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=2.0, max_nn=30))
         
         if mesh_quality == "low":
-            # Simple Poisson reconstruction
             mesh, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=6)
         elif mesh_quality == "medium": 
-            # Better Poisson reconstruction
             mesh, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8)
         else:  # high quality
-            # High-quality Poisson reconstruction
             mesh, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10)
         
-        # Clean up the mesh
         mesh.remove_degenerate_triangles()
         mesh.remove_duplicated_triangles()
         mesh.remove_duplicated_vertices()
         mesh.remove_non_manifold_edges()
         
         return mesh, "mesh"
-        
     except Exception as e:
         st.warning(f"Mesh generation failed: {e}. Returning point cloud instead.")
         return pcd, "point_cloud"
 
 def create_advanced_3d_model(image, height_scale, enhancement_type, mesh_quality, density_factor):
     """
-    Create advanced 3D model with various options like Meshy AI
+    Create advanced 3D model with various options
     """
-    
-    # Preprocess image
     gray, color = preprocess_image_for_3d(image, enhancement_type)
     
-    # Calculate downsample factor based on density
     original_h, original_w = gray.shape
     if density_factor == "ultra_high":
         downsample = 1
@@ -202,25 +511,18 @@ def create_advanced_3d_model(image, height_scale, enhancement_type, mesh_quality
     else:  # preview
         downsample = max(1, max(original_w, original_h) // 150)
     
-    # Downsample
     if downsample > 1:
         gray = gray[::downsample, ::downsample]
         color = color[::downsample, ::downsample]
     
     height, width = gray.shape
-    
-    # Create coordinate grids
     x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height))
-    
-    # Advanced height mapping
     z_coords = gray.astype(np.float32) / 255.0 * height_scale
     
-    # Add some randomness for more organic look (optional)
     if enhancement_type == "artistic":
         noise = np.random.normal(0, height_scale * 0.02, z_coords.shape)
         z_coords += noise
     
-    # Flatten arrays
     x_flat = x_coords.flatten()
     y_flat = y_coords.flatten() 
     z_flat = z_coords.flatten()
@@ -228,7 +530,6 @@ def create_advanced_3d_model(image, height_scale, enhancement_type, mesh_quality
     points = np.column_stack((x_flat, y_flat, z_flat))
     colors_flat = color.reshape(-1, 3) / 255.0
     
-    # Generate 3D model (mesh or point cloud)
     model, model_type = generate_mesh_from_pointcloud(points, colors_flat, mesh_quality)
     
     stats = {
@@ -246,9 +547,8 @@ def create_advanced_3d_model(image, height_scale, enhancement_type, mesh_quality
     return model, points, colors_flat, stats
 
 def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", color_mode="original"):
-    """Create enhanced interactive 3D visualization with multiple view modes"""
+    """Create enhanced interactive 3D visualization with cyber theme"""
     
-    # Sample points for performance if too many
     max_points = 8000 if view_mode == "point_cloud" else 5000
     if len(points) > max_points:
         indices = np.random.choice(len(points), max_points, replace=False)
@@ -262,20 +562,19 @@ def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", co
     if color_mode == "original":
         colors_rgb = colors_sample
     elif color_mode == "height":
-        # Color by height (elevation)
         z_norm = (points_sample[:, 2] - points_sample[:, 2].min()) / (points_sample[:, 2].max() - points_sample[:, 2].min())
-        colors_rgb = px.colors.sample_colorscale('viridis', z_norm)
+        colors_rgb = px.colors.sample_colorscale('plasma', z_norm)
         colors_rgb = np.array([[int(c[4:6], 16)/255, int(c[6:8], 16)/255, int(c[8:10], 16)/255] for c in colors_rgb])
-    elif color_mode == "terrain":
-        # Terrain-like coloring
+    elif color_mode == "cyber":
         z_norm = (points_sample[:, 2] - points_sample[:, 2].min()) / (points_sample[:, 2].max() - points_sample[:, 2].min())
-        colors_rgb = px.colors.sample_colorscale('terrain', z_norm)
-        colors_rgb = np.array([[int(c[4:6], 16)/255, int(c[6:8], 16)/255, int(c[8:10], 16)/255] for c in colors_rgb])
+        # Create custom cyber colorscale (red to blue)
+        colors_rgb = np.zeros((len(z_norm), 3))
+        colors_rgb[:, 0] = 1 - z_norm  # Red decreases with height
+        colors_rgb[:, 2] = z_norm      # Blue increases with height
     else:  # grayscale
         gray_vals = np.mean(colors_sample, axis=1)
         colors_rgb = np.column_stack([gray_vals, gray_vals, gray_vals])
     
-    # Convert colors to format for Plotly
     colors_plotly = ['rgb({},{},{})'.format(
         int(c[0]*255), int(c[1]*255), int(c[2]*255)
     ) for c in colors_rgb]
@@ -283,7 +582,6 @@ def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", co
     fig = go.Figure()
     
     if view_mode == "point_cloud":
-        # Point cloud view
         fig.add_trace(go.Scatter3d(
             x=points_sample[:, 0],
             y=points_sample[:, 1], 
@@ -292,90 +590,58 @@ def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", co
             marker=dict(
                 size=3,
                 color=colors_plotly,
-                opacity=0.8,
+                opacity=0.9,
                 line=dict(width=0)
             ),
-            name='Point Cloud',
-            hovertemplate='<b>Position</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Height: %{z:.1f}<extra></extra>'
+            name='Neural Points',
+            hovertemplate='<b>Neural Node</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Z: %{z:.1f}<extra></extra>'
         ))
     
     elif view_mode == "surface":
-        # Surface view using triangulation
         try:
-            # Create a regular grid for surface plot
-            x_unique = np.unique(points_sample[:, 0])
-            y_unique = np.unique(points_sample[:, 1])
+            from scipy.interpolate import griddata
             
-            if len(x_unique) > 3 and len(y_unique) > 3:
-                # Interpolate to regular grid
-                from scipy.interpolate import griddata
-                
-                # Sample fewer points for surface
-                if len(points_sample) > 2000:
-                    indices = np.random.choice(len(points_sample), 2000, replace=False)
-                    points_surf = points_sample[indices]
-                    colors_surf = colors_rgb[indices]
-                else:
-                    points_surf = points_sample
-                    colors_surf = colors_rgb
-                
-                # Create regular grid
-                xi = np.linspace(points_surf[:, 0].min(), points_surf[:, 0].max(), 50)
-                yi = np.linspace(points_surf[:, 1].min(), points_surf[:, 1].max(), 50)
-                xi_grid, yi_grid = np.meshgrid(xi, yi)
-                
-                # Interpolate z values
-                zi_grid = griddata((points_surf[:, 0], points_surf[:, 1]), points_surf[:, 2], 
-                                 (xi_grid, yi_grid), method='linear', fill_value=0)
-                
-                # Interpolate colors
-                colors_r = griddata((points_surf[:, 0], points_surf[:, 1]), colors_surf[:, 0], 
-                                   (xi_grid, yi_grid), method='linear', fill_value=0)
-                colors_g = griddata((points_surf[:, 0], points_surf[:, 1]), colors_surf[:, 1], 
-                                   (xi_grid, yi_grid), method='linear', fill_value=0)
-                colors_b = griddata((points_surf[:, 0], points_surf[:, 1]), colors_surf[:, 2], 
-                                   (xi_grid, yi_grid), method='linear', fill_value=0)
-                
-                # Create surface
-                fig.add_trace(go.Surface(
-                    x=xi_grid, y=yi_grid, z=zi_grid,
-                    surfacecolor=np.stack([colors_r, colors_g, colors_b], axis=-1),
-                    colorscale=[[0, 'rgb(0,0,0)'], [1, 'rgb(255,255,255)']],
-                    showscale=False,
-                    name='Surface',
-                    hovertemplate='<b>Surface</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Height: %{z:.1f}<extra></extra>'
-                ))
+            if len(points_sample) > 2000:
+                indices = np.random.choice(len(points_sample), 2000, replace=False)
+                points_surf = points_sample[indices]
+                colors_surf = colors_rgb[indices]
             else:
-                # Fallback to point cloud if surface can't be created
-                fig.add_trace(go.Scatter3d(
-                    x=points_sample[:, 0], y=points_sample[:, 1], z=points_sample[:, 2],
-                    mode='markers', marker=dict(size=3, color=colors_plotly, opacity=0.8),
-                    name='Points (Surface Failed)'
-                ))
+                points_surf = points_sample
+                colors_surf = colors_rgb
+            
+            xi = np.linspace(points_surf[:, 0].min(), points_surf[:, 0].max(), 50)
+            yi = np.linspace(points_surf[:, 1].min(), points_surf[:, 1].max(), 50)
+            xi_grid, yi_grid = np.meshgrid(xi, yi)
+            
+            zi_grid = griddata((points_surf[:, 0], points_surf[:, 1]), points_surf[:, 2], 
+                             (xi_grid, yi_grid), method='linear', fill_value=0)
+            
+            fig.add_trace(go.Surface(
+                x=xi_grid, y=yi_grid, z=zi_grid,
+                colorscale='plasma',
+                showscale=True,
+                name='Cyber Surface',
+                hovertemplate='<b>Surface Point</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Z: %{z:.1f}<extra></extra>'
+            ))
         except Exception as e:
-            # Fallback to point cloud
             fig.add_trace(go.Scatter3d(
                 x=points_sample[:, 0], y=points_sample[:, 1], z=points_sample[:, 2],
                 mode='markers', marker=dict(size=3, color=colors_plotly, opacity=0.8),
-                name='Points (Surface Failed)'
+                name='Fallback Points'
             ))
     
     elif view_mode == "wireframe":
-        # Wireframe view - create a mesh outline
         try:
-            # Sample fewer points for wireframe
             if len(points_sample) > 1000:
                 indices = np.random.choice(len(points_sample), 1000, replace=False)
                 points_wire = points_sample[indices]
             else:
                 points_wire = points_sample
             
-            # Create triangulation
             from scipy.spatial import Delaunay
             points_2d = points_wire[:, :2]
             tri = Delaunay(points_2d)
             
-            # Create wireframe lines
             lines_x, lines_y, lines_z = [], [], []
             for triangle in tri.simplices:
                 for i in range(3):
@@ -387,57 +653,58 @@ def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", co
             fig.add_trace(go.Scatter3d(
                 x=lines_x, y=lines_y, z=lines_z,
                 mode='lines',
-                line=dict(color='rgba(255,255,255,0.6)', width=2),
-                name='Wireframe',
+                line=dict(color='#ff0040', width=2),
+                name='Neural Network',
                 hoverinfo='skip'
             ))
             
-            # Add some points for reference
             fig.add_trace(go.Scatter3d(
                 x=points_wire[:, 0], y=points_wire[:, 1], z=points_wire[:, 2],
                 mode='markers',
-                marker=dict(size=2, color=colors_plotly[:len(points_wire)] if len(colors_plotly) >= len(points_wire) else 'white', opacity=0.8),
-                name='Vertices',
-                hovertemplate='<b>Vertex</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Height: %{z:.1f}<extra></extra>'
+                marker=dict(size=4, color='#0040ff', opacity=1),
+                name='Nodes',
+                hovertemplate='<b>Node</b><br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Z: %{z:.1f}<extra></extra>'
             ))
         except Exception as e:
-            # Fallback to point cloud
             fig.add_trace(go.Scatter3d(
                 x=points_sample[:, 0], y=points_sample[:, 1], z=points_sample[:, 2],
                 mode='markers', marker=dict(size=3, color=colors_plotly, opacity=0.8),
-                name='Points (Wireframe Failed)'
+                name='Fallback Points'
             ))
     
-    # Enhanced layout
+    # Cyber-themed layout
     fig.update_layout(
         title=dict(
-            text=f"Interactive 3D Model - {view_mode.title()} View",
-            font=dict(size=20, color="white"),
+            text=f"🧠 Neural 3D Matrix - {view_mode.upper()}",
+            font=dict(size=24, color="#ffffff", family="Orbitron"),
             x=0.5
         ),
         scene=dict(
             xaxis=dict(
-                title="X Axis",
-                backgroundcolor="rgba(0,0,0,0.1)",
-                gridcolor="rgba(255,255,255,0.2)",
+                title="X Neural Axis",
+                titlefont=dict(color="#ff0040"),
+                backgroundcolor="rgba(0,0,0,0.9)",
+                gridcolor="rgba(255,0,64,0.3)",
                 showbackground=True,
-                zerolinecolor="rgba(255,255,255,0.4)"
+                zerolinecolor="rgba(255,0,64,0.5)"
             ),
             yaxis=dict(
-                title="Y Axis",
-                backgroundcolor="rgba(0,0,0,0.1)",
-                gridcolor="rgba(255,255,255,0.2)",
+                title="Y Neural Axis",
+                titlefont=dict(color="#0040ff"),
+                backgroundcolor="rgba(0,0,0,0.9)",
+                gridcolor="rgba(0,64,255,0.3)",
                 showbackground=True,
-                zerolinecolor="rgba(255,255,255,0.4)"
+                zerolinecolor="rgba(0,64,255,0.5)"
             ),
             zaxis=dict(
-                title="Height",
-                backgroundcolor="rgba(0,0,0,0.1)",
+                title="Z Neural Depth",
+                titlefont=dict(color="#ffffff"),
+                backgroundcolor="rgba(0,0,0,0.9)",
                 gridcolor="rgba(255,255,255,0.2)",
                 showbackground=True,
                 zerolinecolor="rgba(255,255,255,0.4)"
             ),
-            bgcolor="rgba(0,0,0,0)",
+            bgcolor="rgba(0,0,0,1)",
             camera=dict(
                 eye=dict(x=1.5, y=1.5, z=1.2),
                 center=dict(x=0, y=0, z=0),
@@ -445,25 +712,25 @@ def create_enhanced_3d_visualization(points, colors, view_mode="point_cloud", co
             ),
             aspectmode='cube'
         ),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="white"),
+        paper_bgcolor="rgba(0,0,0,1)",
+        plot_bgcolor="rgba(0,0,0,1)",
+        font=dict(color="#ffffff", family="Rajdhani"),
         showlegend=True,
         legend=dict(
-            bgcolor="rgba(0,0,0,0.5)",
-            bordercolor="rgba(255,255,255,0.2)",
-            borderwidth=1
+            bgcolor="rgba(0,0,0,0.8)",
+            bordercolor="rgba(255,0,64,0.5)",
+            borderwidth=2,
+            font=dict(color="#ffffff")
         ),
-        margin=dict(l=0, r=0, t=50, b=0)
+        margin=dict(l=0, r=0, t=60, b=0)
     )
     
     return fig
 
 def create_side_by_side_view(points, colors):
-    """Create side-by-side comparison views"""
+    """Create side-by-side comparison views with cyber theme"""
     from plotly.subplots import make_subplots
     
-    # Sample points
     if len(points) > 3000:
         indices = np.random.choice(len(points), 3000, replace=False)
         points_sample = points[indices]
@@ -472,11 +739,10 @@ def create_side_by_side_view(points, colors):
         points_sample = points
         colors_sample = colors
     
-    # Create subplots
     fig = make_subplots(
         rows=1, cols=2,
         specs=[[{'type': 'scatter3d'}, {'type': 'scatter3d'}]],
-        subplot_titles=('Original Colors', 'Height Map'),
+        subplot_titles=('🎨 Original Neural Map', '🧠 Height Neural Matrix'),
         horizontal_spacing=0.05
     )
     
@@ -490,15 +756,13 @@ def create_side_by_side_view(points, colors):
             x=points_sample[:, 0], y=points_sample[:, 1], z=points_sample[:, 2],
             mode='markers',
             marker=dict(size=2, color=colors_orig, opacity=0.8),
-            name='Original',
-            hovertemplate='Original<br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Height: %{z:.1f}<extra></extra>'
+            name='Original Matrix',
+            hovertemplate='Original<br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Z: %{z:.1f}<extra></extra>'
         ),
         row=1, col=1
     )
     
-    # Height-colored view
-    z_norm = (points_sample[:, 2] - points_sample[:, 2].min()) / (points_sample[:, 2].max() - points_sample[:, 2].min())
-    
+    # Height-colored view with cyber colors
     fig.add_trace(
         go.Scatter3d(
             x=points_sample[:, 0], y=points_sample[:, 1], z=points_sample[:, 2],
@@ -506,39 +770,36 @@ def create_side_by_side_view(points, colors):
             marker=dict(
                 size=2,
                 color=points_sample[:, 2],
-                colorscale='viridis',
-                opacity=0.8,
+                colorscale='plasma',
+                opacity=0.9,
                 showscale=True,
-                colorbar=dict(title="Height", x=1.02)
+                colorbar=dict(title="Neural Depth", x=1.02, titlefont=dict(color="#ffffff"))
             ),
-            name='Height Map',
-            hovertemplate='Height Map<br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Height: %{z:.1f}<extra></extra>'
+            name='Neural Height',
+            hovertemplate='Neural<br>X: %{x:.1f}<br>Y: %{y:.1f}<br>Z: %{z:.1f}<extra></extra>'
         ),
         row=1, col=2
     )
     
-    # Update layout
     fig.update_layout(
-        title="Side-by-Side Comparison",
-        font=dict(color="white"),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        title="🔀 Neural Matrix Comparison",
+        font=dict(color="#ffffff", family="Orbitron"),
+        paper_bgcolor="rgba(0,0,0,1)",
+        plot_bgcolor="rgba(0,0,0,1)",
         showlegend=False,
         height=500
     )
     
-    # Update 3D scenes
     scene_props = dict(
-        bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(backgroundcolor="rgba(0,0,0,0.1)", gridcolor="rgba(255,255,255,0.2)"),
-        yaxis=dict(backgroundcolor="rgba(0,0,0,0.1)", gridcolor="rgba(255,255,255,0.2)"),
-        zaxis=dict(backgroundcolor="rgba(0,0,0,0.1)", gridcolor="rgba(255,255,255,0.2)"),
+        bgcolor="rgba(0,0,0,1)",
+        xaxis=dict(backgroundcolor="rgba(0,0,0,0.9)", gridcolor="rgba(255,0,64,0.3)"),
+        yaxis=dict(backgroundcolor="rgba(0,0,0,0.9)", gridcolor="rgba(0,64,255,0.3)"),
+        zaxis=dict(backgroundcolor="rgba(0,0,0,0.9)", gridcolor="rgba(255,255,255,0.2)"),
         camera=dict(eye=dict(x=1.2, y=1.2, z=1)),
         aspectmode='cube'
     )
     
     fig.update_scenes(scene_props)
-    
     return fig
 
 def save_model_to_bytes(model, model_type, filename_base):
@@ -553,7 +814,6 @@ def save_model_to_bytes(model, model_type, filename_base):
         finally:
             os.unlink(tmp_file.name)
     
-    # If it's a mesh, also save as OBJ
     if model_type == "mesh":
         with tempfile.NamedTemporaryFile(suffix='.obj', delete=False) as tmp_file:
             try:
@@ -561,124 +821,192 @@ def save_model_to_bytes(model, model_type, filename_base):
                 with open(tmp_file.name, 'rb') as f:
                     downloads['obj'] = f.read()
             except:
-                pass  # OBJ export might fail, PLY is always available
+                pass
             finally:
                 if os.path.exists(tmp_file.name):
                     os.unlink(tmp_file.name)
     
     return downloads
 
+def create_matrix_loading_effect():
+    """Create matrix-style loading effect"""
+    matrix_html = """
+    <div class="matrix-effect" id="matrix">
+    </div>
+    <script>
+        function createMatrixEffect() {
+            const matrix = document.getElementById('matrix');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement('span');
+                span.className = 'matrix-char';
+                span.textContent = chars[Math.floor(Math.random() * chars.length)];
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDelay = Math.random() * 3 + 's';
+                span.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                matrix.appendChild(span);
+            }
+            
+            setTimeout(() => {
+                matrix.style.display = 'none';
+            }, 5000);
+        }
+        
+        createMatrixEffect();
+    </script>
+    """
+    return matrix_html
+
 def main():
-    # Hero Section
+    # Navigation header
     st.markdown("""
-    <div class="hero-header">
-        <div class="hero-title">🤖 AI 3D Generator</div>
-        <div class="hero-subtitle">Transform any image into stunning 3D models with advanced AI processing</div>
+    <div class="nav-container">
+        <div class="nav-title">⚡ CYBER 3D FORGE ⚡</div>
+        <div class="nav-subtitle">Advanced Neural 3D Model Generation System</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Menu tabs simulation
+    st.markdown("""
+    <div class="menu-tabs">
+        <div class="menu-tab active">🎯 GENERATOR</div>
+        <div class="menu-tab">📊 ANALYTICS</div>
+        <div class="menu-tab">🔬 NEURAL LAB</div>
+        <div class="menu-tab">⚙️ SETTINGS</div>
     </div>
     """, unsafe_allow_html=True)
     
     # Main interface
-    col1, col2 = st.columns([1, 1.2], gap="large")
+    col1, col2 = st.columns([1, 1.3], gap="large")
     
     with col1:
-        st.markdown("### 🎨 Upload & Configure")
+        st.markdown("""
+        <div class="cyber-card">
+            <h3 style="color: #ff0040; font-family: Orbitron;">📡 INPUT MATRIX</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
-        # File uploader with drag and drop
+        # File uploader
         uploaded_file = st.file_uploader(
-            "Drop your image here or click to browse",
+            "🚀 Deploy Neural Image Scanner",
             type=['png', 'jpg', 'jpeg', 'bmp', 'tiff', 'webp'],
-            help="Supported formats: PNG, JPG, JPEG, BMP, TIFF, WebP"
+            help="Compatible formats: PNG, JPG, JPEG, BMP, TIFF, WebP"
         )
         
         if uploaded_file:
             image = Image.open(uploaded_file)
             
-            # Image preview
-            st.image(image, caption=f"📸 {uploaded_file.name}", use_column_width=True)
+            # Image preview with cyber styling
+            st.markdown('<div class="glitch-card">', unsafe_allow_html=True)
+            st.image(image, caption=f"🎯 NEURAL SOURCE: {uploaded_file.name}", use_column_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
             
-            # Image analysis
+            # Image analysis with cyber metrics
             w, h = image.size
             aspect_ratio = w / h
             megapixels = (w * h) / 1_000_000
             
             col_a, col_b, col_c = st.columns(3)
             with col_a:
-                st.metric("📏 Dimensions", f"{w}×{h}")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #0040ff;">📐 DIMENSIONS</h4>
+                    <p style="font-size: 1.2rem; color: #ffffff;">{w}×{h}</p>
+                </div>
+                """, unsafe_allow_html=True)
             with col_b:
-                st.metric("📊 Megapixels", f"{megapixels:.1f}MP")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #ff0040;">⚡ POWER</h4>
+                    <p style="font-size: 1.2rem; color: #ffffff;">{megapixels:.1f}MP</p>
+                </div>
+                """, unsafe_allow_html=True)
             with col_c:
-                st.metric("📐 Aspect", f"{aspect_ratio:.2f}")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #00ff40;">📊 RATIO</h4>
+                    <p style="font-size: 1.2rem; color: #ffffff;">{aspect_ratio:.2f}</p>
+                </div>
+                """, unsafe_allow_html=True)
     
     with col2:
-        st.markdown("### ⚙️ AI Model Settings")
+        st.markdown("""
+        <div class="cyber-card">
+            <h3 style="color: #0040ff; font-family: Orbitron;">🧠 NEURAL CONFIGURATION</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
         if uploaded_file:
             
-            # Model type selection (like Meshy AI)
+            # Model type selection
             model_type = st.selectbox(
-                "🎯 Model Type",
+                "🎯 Neural Architecture",
                 options=["point_cloud", "low", "medium", "high"],
                 format_func=lambda x: {
-                    "point_cloud": "🔮 Point Cloud (Fastest)",
-                    "low": "🏔️ Low-Poly Mesh (Fast)", 
-                    "medium": "🌋 Medium-Detail Mesh (Balanced)",
-                    "high": "⛰️ High-Detail Mesh (Slow, Best Quality)"
+                    "point_cloud": "🔮 Point Cloud Matrix (Lightning Fast)",
+                    "low": "⚡ Low-Res Neural Net (Fast)", 
+                    "medium": "🧠 Medium Neural Net (Balanced)",
+                    "high": "🚀 High-Res Neural Net (Maximum Power)"
                 }[x],
                 index=2
             )
             
             # Enhancement style
             enhancement = st.selectbox(
-                "🎨 Enhancement Style", 
+                "🎨 Neural Enhancement Protocol", 
                 options=["edge_enhanced", "smooth_terrain", "sharp_details", "artistic"],
                 format_func=lambda x: {
-                    "edge_enhanced": "⚡ Edge Enhanced (Recommended)",
-                    "smooth_terrain": "🌊 Smooth Terrain", 
-                    "sharp_details": "🔍 Sharp Details",
-                    "artistic": "🎭 Artistic (Creative)"
+                    "edge_enhanced": "⚡ Edge Boost Protocol (Recommended)",
+                    "smooth_terrain": "🌊 Smooth Surface Algorithm", 
+                    "sharp_details": "🔍 Detail Enhancement Mode",
+                    "artistic": "🎭 Creative Chaos Mode"
                 }[x]
             )
             
-            # Density and height settings
+            # Settings in cyber style
             col_a, col_b = st.columns(2)
             
             with col_a:
                 density = st.select_slider(
-                    "📢 Model Density",
+                    "📡 Neural Density",
                     options=["preview", "low", "medium", "high", "ultra_high"],
                     value="medium",
                     format_func=lambda x: {
-                        "preview": "👁️ Preview",
-                        "low": "⚡ Low", 
-                        "medium": "⚖️ Medium",
-                        "high": "🎯 High",
-                        "ultra_high": "💎 Ultra"
+                        "preview": "👁️ Preview Mode",
+                        "low": "⚡ Low Density", 
+                        "medium": "🎯 Medium Density",
+                        "high": "🚀 High Density",
+                        "ultra_high": "💎 Maximum Density"
                     }[x]
                 )
             
             with col_b:
                 height_scale = st.slider(
-                    "📏 Height Intensity", 
+                    "📏 Z-Axis Amplification", 
                     min_value=10,
                     max_value=200,
                     value=60,
-                    help="Controls the dramatic effect of the 3D conversion"
+                    help="Neural depth intensity multiplier"
                 )
             
-            # Generate button (Meshy AI style)
+            # Generate button with cyber styling
             generate_clicked = st.button(
-                "🚀 Generate 3D Model",
+                "🚀 INITIATE NEURAL FORGE",
                 type="primary",
                 use_container_width=True,
-                help="Click to start AI-powered 3D model generation"
+                help="Deploy advanced AI algorithms for 3D neural matrix generation"
             )
             
             if generate_clicked:
-                # Processing animation
+                # Matrix loading effect
+                st.markdown(create_matrix_loading_effect(), unsafe_allow_html=True)
+                
+                # Processing with cyber theme
                 st.markdown("""
-                <div class="processing-card">
-                    <h3>🤖 AI Processing Your Image...</h3>
-                    <p>Our advanced algorithms are analyzing your image and generating a high-quality 3D model</p>
+                <div class="processing-matrix">
+                    <h3 style="color: #ff6500;">🧠 NEURAL FORGE ACTIVE</h3>
+                    <p style="color: #ffffff;">Advanced AI algorithms analyzing neural pathways and generating 3D matrix...</p>
                 </div>
                 """, unsafe_allow_html=True)
                 
@@ -686,20 +1014,20 @@ def main():
                 status_text = st.empty()
                 
                 try:
-                    # Simulate Meshy AI-like processing steps
+                    # Cyber-themed processing steps
                     steps = [
-                        "🔍 Analyzing image structure...",
-                        "🧠 AI depth estimation...", 
-                        "🎨 Processing colors and textures...",
-                        "🔧 Generating point cloud...",
-                        "🗿 Building 3D mesh...",
-                        "✨ Applying final enhancements..."
+                        "🔍 Scanning neural image structure...",
+                        "🧠 AI depth matrix calculation...", 
+                        "🎨 Processing color neural networks...",
+                        "🔧 Generating 3D point cloud matrix...",
+                        "🗿 Building neural mesh architecture...",
+                        "✨ Applying final neural enhancements..."
                     ]
                     
                     for i, step in enumerate(steps):
-                        status_text.text(step)
+                        status_text.markdown(f"**{step}**")
                         progress_bar.progress((i + 1) / len(steps))
-                        time.sleep(0.5)  # Simulate processing time
+                        time.sleep(0.7)
                     
                     # Actual conversion
                     model, points, colors_array, stats = create_advanced_3d_model(
@@ -715,27 +1043,33 @@ def main():
                     st.session_state.model_type = stats['model_type']
                     
                     progress_bar.progress(1.0)
-                    status_text.text("✅ 3D model generation complete!")
+                    status_text.markdown("**✅ Neural 3D matrix generation complete!**")
                     
                     # Auto-refresh to show results
+                    time.sleep(1)
                     st.rerun()
                     
                 except Exception as e:
-                    st.error(f"❌ Generation failed: {str(e)}")
+                    st.error(f"❌ Neural forge error: {str(e)}")
         else:
-            st.info("👆 Upload an image and click 'Generate 3D Model' to start")
+            st.markdown("""
+            <div class="cyber-card">
+                <h4 style="color: #00ff40; text-align: center;">👆 Deploy Neural Image Scanner Above</h4>
+                <p style="text-align: center; color: rgba(255,255,255,0.7);">Upload an image to begin neural 3D matrix generation</p>
+            </div>
+            """, unsafe_allow_html=True)
     
-    # Results section (shown after generation)
+    # Results section with cyber theme
     if hasattr(st.session_state, 'model') and st.session_state.model is not None:
         
         st.markdown("---")
         
         # Success banner
         st.markdown(f"""
-        <div class="success-glow">
-            <h2 style="margin:0; color: #00ff7f;">🎉 3D Model Generated Successfully!</h2>
+        <div class="success-matrix">
+            <h2 style="margin:0; color: #00ff40; font-family: Orbitron;">🎉 NEURAL FORGE SUCCESS!</h2>
             <p style="margin:0.5rem 0 0 0; color: rgba(255,255,255,0.9);">
-                Created a {st.session_state.stats['model_type']} with {st.session_state.stats['total_points']:,} points
+                Generated {st.session_state.stats['model_type']} neural matrix with {st.session_state.stats['total_points']:,} neural nodes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -744,25 +1078,33 @@ def main():
         result_col1, result_col2 = st.columns([1, 2], gap="large")
         
         with result_col1:
-            st.markdown("### 📊 Model Statistics")
+            st.markdown("""
+            <div class="cyber-card">
+                <h3 style="color: #ff0040; font-family: Orbitron;">📊 NEURAL STATISTICS</h3>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Stats in a nice format
+            # Stats with cyber styling
             stats = st.session_state.stats
             
             st.markdown(f"""
-            <div class="feature-card">
-                <strong>🎯 Model Details:</strong><br>
-                🔷 Type: {stats['model_type'].title()}<br>
-                🔢 Points: {stats['total_points']:,}<br>
-                📏 Dimensions: {stats['processed_dimensions']}<br>
-                📊 Height Range: {stats['height_range']}<br>
-                🎨 Style: {stats['enhancement'].replace('_', ' ').title()}<br>
-                💎 Quality: {stats['mesh_quality'].title()}
+            <div class="glitch-card">
+                <h4 style="color: #0040ff;">🎯 Matrix Details:</h4>
+                <p><span style="color: #ff0040;">🔷 Type:</span> {stats['model_type'].upper()}</p>
+                <p><span style="color: #0040ff;">🔢 Neural Nodes:</span> {stats['total_points']:,}</p>
+                <p><span style="color: #00ff40;">📏 Dimensions:</span> {stats['processed_dimensions']}</p>
+                <p><span style="color: #ff0040;">📊 Z-Range:</span> {stats['height_range']}</p>
+                <p><span style="color: #0040ff;">🎨 Enhancement:</span> {stats['enhancement'].replace('_', ' ').upper()}</p>
+                <p><span style="color: #00ff40;">💎 Quality:</span> {stats['mesh_quality'].upper()}</p>
             </div>
             """, unsafe_allow_html=True)
             
             # Download section
-            st.markdown("### 💾 Download Your Model")
+            st.markdown("""
+            <div class="cyber-card">
+                <h3 style="color: #00ff40; font-family: Orbitron;">💾 EXPORT MATRIX</h3>
+            </div>
+            """, unsafe_allow_html=True)
             
             try:
                 downloads = save_model_to_bytes(
@@ -775,9 +1117,9 @@ def main():
                 
                 # PLY download
                 st.download_button(
-                    "⬇️ Download PLY (Universal)",
+                    "⬇️ DOWNLOAD PLY MATRIX",
                     data=downloads['ply'],
-                    file_name=f"{filename_base}_3d_model.ply",
+                    file_name=f"{filename_base}_neural_matrix.ply",
                     mime="application/octet-stream",
                     use_container_width=True
                 )
@@ -785,53 +1127,61 @@ def main():
                 # OBJ download if available
                 if 'obj' in downloads:
                     st.download_button(
-                        "⬇️ Download OBJ (Mesh)",
+                        "⬇️ DOWNLOAD OBJ MESH",
                         data=downloads['obj'],
-                        file_name=f"{filename_base}_3d_model.obj", 
+                        file_name=f"{filename_base}_neural_mesh.obj", 
                         mime="application/octet-stream",
                         use_container_width=True
                     )
                 
-                st.markdown("**🎯 Compatible Software:**")
-                st.markdown("• Blender • MeshLab • Maya • 3ds Max • Unity • Unreal Engine")
+                st.markdown("""
+                <div style="background: rgba(0,64,255,0.1); padding: 1rem; border-radius: 10px; border: 1px solid rgba(0,64,255,0.3);">
+                    <p><strong style="color: #0040ff;">🎯 Compatible Neural Software:</strong></p>
+                    <p style="color: rgba(255,255,255,0.8);">• Blender • MeshLab • Maya • 3ds Max • Unity • Unreal Engine • CloudCompare</p>
+                </div>
+                """, unsafe_allow_html=True)
                 
             except Exception as e:
-                st.error(f"Download preparation failed: {e}")
+                st.error(f"Export preparation failed: {e}")
         
         with result_col2:
-            st.markdown("### 🎮 Enhanced 3D Viewer")
-            
-            # Viewer controls
             st.markdown("""
-            <div class="viewer-controls">
-                <strong>🎛️ Viewer Controls</strong>
+            <div class="cyber-card">
+                <h3 style="color: #0040ff; font-family: Orbitron;">🎮 NEURAL MATRIX VIEWER</h3>
             </div>
             """, unsafe_allow_html=True)
             
-            # Viewer options in columns for better layout
+            # Viewer controls with cyber theme
+            st.markdown("""
+            <div class="viewer-control-panel">
+                <h4 style="color: #ff0040; font-family: Orbitron;">🎛️ NEURAL CONTROLS</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Viewer options
             viewer_col1, viewer_col2 = st.columns(2)
             
             with viewer_col1:
                 view_mode = st.selectbox(
-                    "👁️ View Mode",
+                    "👁️ Neural View Mode",
                     options=["point_cloud", "surface", "wireframe"],
                     format_func=lambda x: {
-                        "point_cloud": "🔮 Point Cloud",
-                        "surface": "🌊 Surface",
-                        "wireframe": "📐 Wireframe"
+                        "point_cloud": "🔮 Neural Points",
+                        "surface": "🌊 Neural Surface",
+                        "wireframe": "📐 Neural Network"
                     }[x],
                     key="view_mode"
                 )
             
             with viewer_col2:
                 color_mode = st.selectbox(
-                    "🎨 Color Mode",
-                    options=["original", "height", "terrain", "grayscale"],
+                    "🎨 Neural Color Protocol",
+                    options=["original", "height", "cyber", "grayscale"],
                     format_func=lambda x: {
-                        "original": "🖼️ Original",
-                        "height": "📈 Height Map",
-                        "terrain": "🗻 Terrain",
-                        "grayscale": "⚫ Grayscale"
+                        "original": "🖼️ Original Matrix",
+                        "height": "📈 Height Neural Map",
+                        "cyber": "⚡ Cyber Protocol",
+                        "grayscale": "⚫ Stealth Mode"
                     }[x],
                     key="color_mode"
                 )
@@ -846,178 +1196,275 @@ def main():
                 )
                 st.plotly_chart(fig, use_container_width=True, theme="streamlit")
                 
-                # Controls help
+                # Controls help with cyber theme
                 st.markdown("""
-                <div class="feature-card">
-                    <strong>🎮 Interactive Controls:</strong><br>
-                    🖱️ <strong>Rotate:</strong> Click and drag<br>
-                    🔍 <strong>Zoom:</strong> Scroll wheel or pinch<br>
-                    📱 <strong>Pan:</strong> Right-click and drag<br>
-                    🏠 <strong>Reset:</strong> Double-click<br>
-                    📋 <strong>Save View:</strong> Camera icon in toolbar
+                <div class="cyber-card">
+                    <h4 style="color: #00ff40;">🎮 Neural Interface Controls:</h4>
+                    <p><span style="color: #ff0040;">🖱️ ROTATE:</span> Click and drag neural matrix</p>
+                    <p><span style="color: #0040ff;">🔍 ZOOM:</span> Scroll wheel or pinch gesture</p>
+                    <p><span style="color: #00ff40;">📱 PAN:</span> Right-click and drag interface</p>
+                    <p><span style="color: #ff0040;">🏠 RESET:</span> Double-click for neural reset</p>
+                    <p><span style="color: #0040ff;">📋 EXPORT:</span> Camera icon in neural toolbar</p>
                 </div>
                 """, unsafe_allow_html=True)
                 
             except Exception as e:
-                st.error(f"3D visualization failed: {e}")
+                st.error(f"Neural visualization failed: {e}")
         
-        # Additional visualization section
+        # Advanced analysis section
         st.markdown("---")
-        st.markdown("### 🔍 Detailed Analysis")
+        st.markdown("""
+        <div class="cyber-card">
+            <h3 style="color: #ff0040; font-family: Orbitron; text-align: center;">🔍 ADVANCED NEURAL ANALYSIS</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
-        # Tabs for different views
-        tab1, tab2, tab3 = st.tabs(["📊 Side-by-Side Comparison", "📈 Statistics", "🛠️ Technical Info"])
+        # Tabs with cyber styling
+        tab1, tab2, tab3 = st.tabs(["📊 NEURAL COMPARISON", "📈 MATRIX ANALYTICS", "🛠️ TECHNICAL SPECS"])
         
         with tab1:
-            st.markdown("**Compare original colors vs height-based visualization:**")
+            st.markdown("**🔀 Compare original neural map vs height-based neural matrix:**")
             try:
                 comparison_fig = create_side_by_side_view(st.session_state.points, st.session_state.colors)
                 st.plotly_chart(comparison_fig, use_container_width=True, theme="streamlit")
             except Exception as e:
-                st.error(f"Comparison view failed: {e}")
+                st.error(f"Neural comparison failed: {e}")
         
         with tab2:
-            # Detailed statistics
+            # Advanced statistics with cyber theme
             points = st.session_state.points
             colors = st.session_state.colors
             
             col_stat1, col_stat2, col_stat3 = st.columns(3)
             
             with col_stat1:
-                st.metric("📍 Total Points", f"{len(points):,}")
-                st.metric("📏 X Range", f"{points[:, 0].max() - points[:, 0].min():.1f}")
-                st.metric("📐 Y Range", f"{points[:, 1].max() - points[:, 1].min():.1f}")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #ff0040;">📍 NEURAL NODES</h4>
+                    <p style="font-size: 1.5rem;">{len(points):,}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #0040ff;">📏 X-AXIS SPAN</h4>
+                    <p style="font-size: 1.2rem;">{points[:, 0].max() - points[:, 0].min():.1f}</p>
+                </div>
+                """, unsafe_allow_html=True)
             
             with col_stat2:
-                st.metric("⛰️ Height Range", f"{points[:, 2].max() - points[:, 2].min():.2f}")
-                st.metric("📊 Mean Height", f"{np.mean(points[:, 2]):.2f}")
-                st.metric("📈 Height Std", f"{np.std(points[:, 2]):.2f}")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #00ff40;">⛰️ Z-DEPTH RANGE</h4>
+                    <p style="font-size: 1.2rem;">{points[:, 2].max() - points[:, 2].min():.2f}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #ff0040;">📊 MEAN DEPTH</h4>
+                    <p style="font-size: 1.2rem;">{np.mean(points[:, 2]):.2f}</p>
+                </div>
+                """, unsafe_allow_html=True)
             
             with col_stat3:
-                st.metric("🎨 Color Diversity", f"{len(np.unique(colors.reshape(-1, 3), axis=0)):,}")
-                st.metric("💾 Model Size", f"{len(points) * 6 * 4 / 1024:.1f} KB")  # Rough estimate
-                st.metric("🔗 Aspect Ratio", f"{(points[:, 0].max() - points[:, 0].min()) / (points[:, 1].max() - points[:, 1].min()):.2f}")
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #0040ff;">🎨 COLOR DIVERSITY</h4>
+                    <p style="font-size: 1.2rem;">{len(np.unique(colors.reshape(-1, 3), axis=0)):,}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown(f"""
+                <div class="metric-container">
+                    <h4 style="color: #00ff40;">💾 NEURAL SIZE</h4>
+                    <p style="font-size: 1.2rem;">{len(points) * 6 * 4 / 1024:.1f} KB</p>
+                </div>
+                """, unsafe_allow_html=True)
             
-            # Height distribution histogram
-            st.markdown("**📊 Height Distribution:**")
+            # Neural depth distribution
+            st.markdown("**📊 Neural Depth Distribution Analysis:**")
             height_hist = px.histogram(
                 x=points[:, 2],
                 nbins=50,
-                title="Distribution of Heights in 3D Model",
-                labels={'x': 'Height', 'y': 'Frequency'}
+                title="Neural Depth Distribution Matrix",
+                labels={'x': 'Neural Depth', 'y': 'Node Frequency'},
+                color_discrete_sequence=['#ff0040']
             )
             height_hist.update_layout(
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="white")
+                paper_bgcolor="rgba(0,0,0,1)",
+                plot_bgcolor="rgba(0,0,0,0.8)",
+                font=dict(color="#ffffff", family="Rajdhani"),
+                title_font=dict(color="#ffffff", family="Orbitron")
             )
             st.plotly_chart(height_hist, use_container_width=True)
         
         with tab3:
-            st.markdown("**🔧 Technical Processing Details:**")
-            
-            tech_info = f"""
-            **Original Image Processing:**
-            - Source dimensions: {st.session_state.stats['original_dimensions']}
-            - Processed dimensions: {st.session_state.stats['processed_dimensions']}
-            - Downsample factor: {st.session_state.stats['downsample_factor']}x
-            
-            **3D Conversion Details:**
-            - Enhancement type: {st.session_state.stats['enhancement'].replace('_', ' ').title()}
-            - Model quality: {st.session_state.stats['mesh_quality'].title()}
-            - Density setting: {st.session_state.stats['density'].replace('_', ' ').title()}
-            - Total vertices: {st.session_state.stats['total_points']:,}
-            
-            **Coordinate System:**
-            - X-axis: Image width (left to right)
-            - Y-axis: Image height (top to bottom)  
-            - Z-axis: Brightness-based elevation
-            - Height mapping: Linear (0-255 brightness → 0-{height_scale} units)
-            
-            **File Format Support:**
-            - PLY: Point cloud data with colors
-            - OBJ: Mesh data (if mesh generation successful)
-            - Compatible with: Blender, MeshLab, CloudCompare, etc.
-            """
-            
-            st.markdown(tech_info)
+            st.markdown("""
+            <div class="glitch-card">
+                <h4 style="color: #0040ff;">🔧 Neural Processing Pipeline:</h4>
+                <p><strong style="color: #ff0040;">Source Matrix:</strong> {source_dims}</p>
+                <p><strong style="color: #0040ff;">Processed Matrix:</strong> {processed_dims}</p>
+                <p><strong style="color: #00ff40;">Compression Factor:</strong> {downsample_factor}x</p>
+                
+                <h4 style="color: #ff0040;">🧠 Neural Conversion Details:</h4>
+                <p><strong style="color: #0040ff;">Enhancement Protocol:</strong> {enhancement_type}</p>
+                <p><strong style="color: #00ff40;">Neural Architecture:</strong> {mesh_quality}</p>
+                <p><strong style="color: #ff0040;">Density Configuration:</strong> {density_setting}</p>
+                <p><strong style="color: #0040ff;">Total Neural Vertices:</strong> {total_points:,}</p>
+                
+                <h4 style="color: #00ff40;">📐 Neural Coordinate System:</h4>
+                <p><strong style="color: #ff0040;">X-Axis:</strong> Neural width mapping (left→right)</p>
+                <p><strong style="color: #0040ff;">Y-Axis:</strong> Neural height mapping (top→bottom)</p>
+                <p><strong style="color: #00ff40;">Z-Axis:</strong> Neural depth via luminance algorithm</p>
+                <p><strong style="color: #ff0040;">Height Algorithm:</strong> Linear transformation (0-255 → 0-{height_scale})</p>
+                
+                <h4 style="color: #0040ff;">💾 Neural Export Formats:</h4>
+                <p><strong style="color: #00ff40;">PLY:</strong> Point cloud neural data with color matrices</p>
+                <p><strong style="color: #ff0040;">OBJ:</strong> Mesh neural data (if neural mesh generation successful)</p>
+                <p><strong style="color: #0040ff;">Compatible Systems:</strong> Blender, MeshLab, CloudCompare, Unity, Unreal</p>
+            </div>
+            """.format(
+                source_dims=st.session_state.stats['original_dimensions'],
+                processed_dims=st.session_state.stats['processed_dimensions'],
+                downsample_factor=st.session_state.stats['downsample_factor'],
+                enhancement_type=st.session_state.stats['enhancement'].replace('_', ' ').upper(),
+                mesh_quality=st.session_state.stats['mesh_quality'].upper(),
+                density_setting=st.session_state.stats['density'].replace('_', ' ').upper(),
+                total_points=st.session_state.stats['total_points'],
+                height_scale=height_scale if 'height_scale' in locals() else 60
+            ), unsafe_allow_html=True)
         
-        # Next steps section
+        # Next steps with cyber theme
         st.markdown("---")
-        st.markdown("### 🚀 Next Steps")
+        st.markdown("""
+        <div class="cyber-card">
+            <h3 style="color: #00ff40; font-family: Orbitron; text-align: center;">🚀 NEURAL DEPLOYMENT OPTIONS</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
         col_a, col_b, col_c = st.columns(3)
         
         with col_a:
             st.markdown("""
-            <div class="feature-card">
-                <h4>🎨 Further Editing</h4>
-                <p>Import your model into Blender for advanced texturing, lighting, rigging, and animation. The PLY format preserves colors perfectly.</p>
+            <div class="glitch-card">
+                <h4 style="color: #ff0040;">🎨 Advanced Neural Editing</h4>
+                <p style="color: rgba(255,255,255,0.8);">Deploy neural matrix into Blender for advanced texturing, lighting systems, rigging protocols, and animation sequences. Full neural color preservation guaranteed.</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col_b:
             st.markdown("""
-            <div class="feature-card">
-                <h4>🖨️ 3D Printing</h4>
-                <p>Clean up the mesh in MeshLab, check for manifold edges, and export as STL for 3D printing. Consider scaling and support structures.</p>
+            <div class="glitch-card">
+                <h4 style="color: #0040ff;">🖨️ Physical Matrix Manifestation</h4>
+                <p style="color: rgba(255,255,255,0.8);">Execute neural mesh cleanup protocols in MeshLab, verify manifold edge integrity, and export as STL for 3D printing materialization. Configure scaling parameters and support architectures.</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col_c:
             st.markdown("""
-            <div class="feature-card">
-                <h4>🎮 Game Development</h4>
-                <p>Use as terrain, environment assets, or decorative props in Unity, Unreal Engine, or Godot. Optimize polygon count as needed.</p>
+            <div class="glitch-card">
+                <h4 style="color: #00ff40;">🎮 Game Engine Integration</h4>
+                <p style="color: rgba(255,255,255,0.8);">Integrate neural terrain matrices as environment assets, terrain systems, or decorative neural props in Unity, Unreal Engine, or Godot. Optimize neural polygon density as required.</p>
             </div>
             """, unsafe_allow_html=True)
 
-# Enhanced Sidebar with more information
+# Enhanced Sidebar with cyber theme
 with st.sidebar:
-    st.markdown("### 🔬 Advanced Options")
+    st.markdown("""
+    <div style="background: linear-gradient(180deg, rgba(255,0,64,0.1) 0%, rgba(0,64,255,0.1) 100%); 
+                padding: 1.5rem; border-radius: 15px; border: 2px solid rgba(255,0,64,0.3); margin-bottom: 1rem;">
+        <h3 style="color: #ff0040; font-family: Orbitron; text-align: center;">🔬 NEURAL LAB</h3>
+    </div>
+    """, unsafe_allow_html=True)
     
-    show_advanced = st.checkbox("Show Advanced Settings")
+    show_advanced = st.checkbox("🧠 Activate Advanced Neural Controls", key="advanced_controls")
     
     if show_advanced:
-        st.markdown("**🎯 Processing Pipeline:**")
-        st.markdown("1. Image preprocessing & enhancement")
-        st.markdown("2. Depth map generation from brightness") 
-        st.markdown("3. 3D point cloud creation")
-        st.markdown("4. Mesh reconstruction (optional)")
-        st.markdown("5. Quality optimization & cleanup")
+        st.markdown("""
+        <div style="background: rgba(0,0,0,0.8); padding: 1rem; border-radius: 10px; 
+                    border: 1px solid rgba(0,64,255,0.3); margin: 1rem 0;">
+            <h4 style="color: #0040ff;">🎯 Neural Processing Pipeline:</h4>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">1. Neural image preprocessing & enhancement</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">2. AI depth matrix generation from luminance data</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">3. 3D neural point cloud matrix creation</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">4. Advanced neural mesh reconstruction</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">5. Quality optimization & neural cleanup protocols</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        st.markdown("**💡 Pro Tips:**")
-        st.markdown("• High contrast images = better 3D structure")
-        st.markdown("• Portraits and landscapes work excellently") 
-        st.markdown("• Try different enhancement styles for variety")
-        st.markdown("• Start with medium quality, then increase")
-        st.markdown("• Use wireframe view to see mesh structure")
+        st.markdown("""
+        <div style="background: rgba(255,0,64,0.1); padding: 1rem; border-radius: 10px; 
+                    border: 1px solid rgba(255,0,64,0.3); margin: 1rem 0;">
+            <h4 style="color: #ff0040;">💡 Neural Enhancement Pro Tips:</h4>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">• High contrast neural sources = superior 3D structure</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">• Portrait and landscape matrices work excellently</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">• Experiment with enhancement protocols for variety</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">• Begin with medium neural quality, then amplify</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;">• Use wireframe view to analyze neural topology</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        st.markdown("**🎨 View Modes Explained:**")
-        st.markdown("• **Point Cloud**: Raw 3D points, fastest rendering")
-        st.markdown("• **Surface**: Smooth interpolated surface")
-        st.markdown("• **Wireframe**: Shows mesh structure and topology")
+        st.markdown("""
+        <div style="background: rgba(0,255,64,0.1); padding: 1rem; border-radius: 10px; 
+                    border: 1px solid rgba(0,255,64,0.3); margin: 1rem 0;">
+            <h4 style="color: #00ff40;">🎨 Neural View Protocols:</h4>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Point Cloud:</strong> Raw neural nodes, maximum rendering speed</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Surface:</strong> Smooth interpolated neural surface</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Wireframe:</strong> Neural mesh structure visualization</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        st.markdown("**🌈 Color Modes:**")
-        st.markdown("• **Original**: Preserves image colors")
-        st.markdown("• **Height**: Colors based on elevation")
-        st.markdown("• **Terrain**: Earth-like color mapping")
-        st.markdown("• **Grayscale**: Monochrome visualization")
+        st.markdown("""
+        <div style="background: rgba(0,64,255,0.1); padding: 1rem; border-radius: 10px; 
+                    border: 1px solid rgba(0,64,255,0.3); margin: 1rem 0;">
+            <h4 style="color: #0040ff;">🌈 Neural Color Protocols:</h4>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Original:</strong> Preserves source neural colors</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Height:</strong> Colors based on neural elevation data</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Cyber:</strong> Red-blue neural gradient protocol</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 0.2rem 0;"><strong>Stealth:</strong> Monochrome neural visualization</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("**🤖 Powered by:**")
-    st.markdown("• Open3D for 3D processing")
-    st.markdown("• OpenCV for image analysis") 
-    st.markdown("• Plotly for interactive visualization")
-    st.markdown("• SciPy for advanced algorithms")
     
-    # Show current session info if model exists
+    st.markdown("""
+    <div style="background: rgba(0,0,0,0.8); padding: 1rem; border-radius: 10px; 
+                border: 1px solid rgba(255,255,255,0.2); margin: 1rem 0;">
+        <h4 style="color: #ffffff;">🤖 Neural Engine Core:</h4>
+        <p style="color: #ff0040; margin: 0.2rem 0;">• Open3D neural processing</p>
+        <p style="color: #0040ff; margin: 0.2rem 0;">• OpenCV neural image analysis</p>
+        <p style="color: #00ff40; margin: 0.2rem 0;">• Plotly interactive neural visualization</p>
+        <p style="color: #ff0040; margin: 0.2rem 0;">• SciPy advanced neural algorithms</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Show current neural session info if model exists
     if hasattr(st.session_state, 'model') and st.session_state.model is not None:
         st.markdown("---")
-        st.markdown("**📊 Current Session:**")
-        st.markdown(f"• Model: {st.session_state.stats['model_type']}")
-        st.markdown(f"• Points: {st.session_state.stats['total_points']:,}")
-        st.markdown(f"• File: {st.session_state.filename}")
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(0,255,64,0.1) 0%, rgba(0,64,255,0.1) 100%); 
+                    padding: 1rem; border-radius: 10px; border: 2px solid rgba(0,255,64,0.3);">
+            <h4 style="color: #00ff40;">📊 Active Neural Session:</h4>
+            <p style="color: #0040ff; margin: 0.2rem 0;">• Neural Model: {model_type}</p>
+            <p style="color: #ff0040; margin: 0.2rem 0;">• Neural Nodes: {total_points:,}</p>
+            <p style="color: #00ff40; margin: 0.2rem 0;">• Source File: {filename}</p>
+        </div>
+        """.format(
+            model_type=st.session_state.stats['model_type'].upper(),
+            total_points=st.session_state.stats['total_points'],
+            filename=st.session_state.filename
+        ), unsafe_allow_html=True)
+
+# Footer with cyber theme
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; padding: 2rem; background: linear-gradient(90deg, rgba(255,0,64,0.1) 0%, rgba(0,0,0,0.8) 50%, rgba(0,64,255,0.1) 100%); 
+            border-radius: 15px; border: 1px solid rgba(255,0,64,0.2); margin: 2rem 0;">
+    <h3 style="color: #ff0040; font-family: Orbitron;">⚡ CYBER 3D FORGE v2.0 ⚡</h3>
+    <p style="color: rgba(255,255,255,0.7); font-family: Rajdhani;">Advanced Neural 3D Matrix Generation System</p>
+    <p style="color: rgba(255,255,255,0.5); font-family: Rajdhani; font-size: 0.9rem;">
+        Powered by AI Neural Networks | Quantum Processing Algorithms | Advanced Matrix Mathematics
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
